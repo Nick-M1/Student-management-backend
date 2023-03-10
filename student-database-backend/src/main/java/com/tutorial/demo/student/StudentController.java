@@ -25,9 +25,14 @@ public class StudentController {
     }
 
     // GET ALL STUDENTS (with ordering & filtering
+    @GetMapping(path = "all")                        // Get request
+    public List<Student> getAllStudents() {
+        return studentService.getAllStudents();
+    }
+
     @GetMapping                        // Get request
-    public List<Student> getAllStudents(@RequestParam(required = false) String searchBy, @RequestParam(required = false) String orderBy, @RequestParam(required = false) String isAsc, @RequestParam(required = false) List<String> subjects) {
-        return studentService.getAllStudents(searchBy, orderBy, isAsc, subjects);
+    public List<Student> getAllStudentsByRequest(@RequestParam(required = false) String searchBy, @RequestParam(required = false) String orderBy, @RequestParam(required = false) String isAsc, @RequestParam(required = false) List<String> subjects) {
+        return studentService.getAllStudentsByRequest(searchBy, orderBy, isAsc, subjects);
     }
 
     // GET ALL SUBJECTS
@@ -44,11 +49,11 @@ public class StudentController {
     @DeleteMapping(path="{studentId}")  // Delete request (given studentId)
     public Long deleteStudent(@PathVariable("studentId") Long studentId) {
         return studentService.deleteStudent(studentId);
-    } //... Improve: Enforce that id != null ...
+    }
 
     @PutMapping(path="{studentId}")     // Put/update request (update id, name & email)
-    public Long updateStudent(@PathVariable("studentId") Long studentId, @RequestParam(required = false) String name, @RequestParam(required = false) String email, @RequestParam(required = false) String dob) {
-        return studentService.updateStudent(studentId, name, email, dob);
+    public Long updateStudent(@PathVariable("studentId") Long studentId, @RequestParam(required = false) String name, @RequestParam(required = false) String email, @RequestParam(required = false) String image, @RequestParam(required = false) String dob, @RequestParam(required = false) Set<String> subjects) {
+        return studentService.updateStudent(studentId, name, email, image, dob, subjects);
     }
 
 }

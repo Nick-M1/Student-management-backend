@@ -17,6 +17,7 @@ public class Student {
     @Column(name = "id", updatable = false)                                             private Long id;        // student's id can't be modified
     @Column(name = "name", nullable = false, columnDefinition = "TEXT")                 private String name;
     @Column(name = "email", nullable = false, columnDefinition = "TEXT", unique = true) private String email;
+    @Column(name = "image", nullable = false, columnDefinition = "TEXT")                private String image;
     @Column(name = "date_of_birth", nullable = false, columnDefinition = "TEXT")        private LocalDate dob;
     @ElementCollection @CollectionTable(name = "subjects")                              private Set<String> subjects;
     @Transient                                                                          private Integer age;    // This value is calculated, not inputted into constructor as argument
@@ -25,17 +26,19 @@ public class Student {
     public Student() {
     }
 
-    public Student(Long id, String name, String email, LocalDate dob, Set<String> subjects ) {
+    public Student(Long id, String name, String email, String image, LocalDate dob, Set<String> subjects ) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.image = image;
         this.dob = dob;
         this.subjects = subjects;
     }
 
-    public Student(String name, String email, LocalDate dob, Set<String> subjects) {
+    public Student(String name, String email, String image, LocalDate dob, Set<String> subjects) {
         this.name = name;
         this.email = email;
+        this.image = image;
         this.dob = dob;
         this.subjects = subjects;
     }
@@ -64,6 +67,14 @@ public class Student {
         this.email = email;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public LocalDate getDob() {
         return dob;
     }
@@ -87,6 +98,6 @@ public class Student {
 
     @Override
     public String toString() {
-        return String.format("Student( id=%d, name=%s, email=%s, dob=%s, age=%d)", id, name, email, dob, age);
+        return String.format("Student( id=%d, name=%s, email=%s, dob=%s, age=%d, subjects=%s)", id, name, email, dob, age, subjects.toString());
     }
 }
