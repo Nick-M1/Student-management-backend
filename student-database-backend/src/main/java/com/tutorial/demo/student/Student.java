@@ -3,6 +3,8 @@ package com.tutorial.demo.student;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
+import java.util.Set;
 
 @Entity(name="Student")             // Hibernate DB
 @Table(name = "student", uniqueConstraints = {@UniqueConstraint(name = "student_email_unique", columnNames = "email")})   // Database
@@ -16,23 +18,26 @@ public class Student {
     @Column(name = "name", nullable = false, columnDefinition = "TEXT")                 private String name;
     @Column(name = "email", nullable = false, columnDefinition = "TEXT", unique = true) private String email;
     @Column(name = "date_of_birth", nullable = false, columnDefinition = "TEXT")        private LocalDate dob;
+    @ElementCollection @CollectionTable(name = "subjects")                              private Set<String> subjects;
     @Transient                                                                          private Integer age;    // This value is calculated, not inputted into constructor as argument
 
 
     public Student() {
     }
 
-    public Student(Long id, String name, String email, LocalDate dob) {
+    public Student(Long id, String name, String email, LocalDate dob, Set<String> subjects ) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.dob = dob;
+        this.subjects = subjects;
     }
 
-    public Student(String name, String email, LocalDate dob) {
+    public Student(String name, String email, LocalDate dob, Set<String> subjects) {
         this.name = name;
         this.email = email;
         this.dob = dob;
+        this.subjects = subjects;
     }
 
     public Long getId() {
@@ -65,6 +70,14 @@ public class Student {
 
     public void setDob(LocalDate dob) {
         this.dob = dob;
+    }
+
+    public Set<String> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Set<String> subjects) {
+        this.subjects = subjects;
     }
 
     public Integer getAge() {                   // Calcs age from dob

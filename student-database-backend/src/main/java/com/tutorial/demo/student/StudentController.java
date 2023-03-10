@@ -5,13 +5,11 @@ package com.tutorial.demo.student;
     Stores resources for API for Student
 */
 
-import com.tutorial.demo.exception.ApiRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(path="api/v1/student")
@@ -26,14 +24,16 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-//    @GetMapping                        // Get request
-//    public List<Student> getAllStudents() {
-//        return studentService.getAllStudents();
-//    }
-
+    // GET ALL STUDENTS (with ordering & filtering
     @GetMapping                        // Get request
-    public List<Student> getAllStudents(@RequestParam(required = false) String searchBy, @RequestParam(required = false) String orderBy, @RequestParam(required = false) String isAsc) {
-        return studentService.getAllStudents(searchBy, orderBy, isAsc);
+    public List<Student> getAllStudents(@RequestParam(required = false) String searchBy, @RequestParam(required = false) String orderBy, @RequestParam(required = false) String isAsc, @RequestParam(required = false) List<String> subjects) {
+        return studentService.getAllStudents(searchBy, orderBy, isAsc, subjects);
+    }
+
+    // GET ALL SUBJECTS
+    @GetMapping(path = "subjects")
+    public Set<String> getAllSubjects() {
+        return studentService.getAllSubjects();
     }
 
     @PostMapping                       // Post request

@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Component      // Allows this class to be 'injected' into constructor for another class -> For @Autowired
 public class StudentService {
@@ -27,11 +27,9 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-//    public List<Student> getAllStudents() {
-//        return studentRepository.findAllByOrderByIdAsc();
-//    }
 
-    public List<Student> getAllStudents(String searchBy, String orderBy, String isAsc) {
+    // GETTERS
+    public List<Student> getAllStudents(String searchBy, String orderBy, String isAsc, List<String> subjects) {
         // Ascending or Descending order
         Sort.Direction sortDirection = (isAsc == null || !Objects.equals(isAsc, "false")) ? Sort.Direction.ASC : Sort.Direction.DESC;          // default to true
 
@@ -46,13 +44,18 @@ public class StudentService {
 
         // Search by search term
         String searchByParam = searchBy == null ? "" : searchBy;
-        return studentRepository.findAllByNameIsContainingIgnoreCaseOrEmailIsContainingIgnoreCase(
+        return studentRepository.findAllStudentsCustomQuery(
             searchByParam,
-            searchByParam,
+            subjects == null ? new LinkedList<>() : subjects,
             customCategorySort
         );
     }
 
+    public Set<String> getAllSubjects() {
+        return studentRepository.findAllSubjects();
+    }
+
+    // POSTs
     // When adding a new student to DB, check that this email doesn't already exist in DB & add to DB
     public Long addNewStudent(Student student) {
         studentRepository.findStudentByEmail(student.getEmail())
@@ -62,6 +65,7 @@ public class StudentService {
         return student.getId();
     }
 
+    // DELETEs
     public Long deleteStudent(Long studentId) {
         studentRepository.findById(studentId)
                 .orElseThrow(() -> new ApiRequestException(String.format("student with id: %d not found", studentId)));
@@ -70,6 +74,7 @@ public class StudentService {
         return studentId;
     }
 
+    // PUTs
     @Transactional
     public Long updateStudent(Long studentId, String name, String email, String dob) {
         Student currentStudent = studentRepository.findById(studentId)                      // Check student with this id exists (else error)
