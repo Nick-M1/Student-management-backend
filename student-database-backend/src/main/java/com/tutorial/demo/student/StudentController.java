@@ -35,6 +35,11 @@ public class StudentController {
         return studentService.getAllStudentsByRequest(searchBy, orderBy, isAsc, subjects);
     }
 
+    @GetMapping(path = "{studentId}")                        // Get request
+    public Student getStudentById(@PathVariable("studentId") Long studentId) {
+        return studentService.getStudentById(studentId);
+    }
+
     // GET ALL SUBJECTS
     @GetMapping(path = "subjects")
     public Set<String> getAllSubjects() {

@@ -51,6 +51,11 @@ public class StudentService {
         );
     }
 
+    public Student getStudentById(Long studentId) {
+        return studentRepository.findById(studentId)
+                .orElseThrow(() -> new ApiRequestException(String.format("student with id: %d not found", studentId)));
+    }
+
     public Set<String> getAllSubjects() {
         return studentRepository.findAllSubjects();
     }
