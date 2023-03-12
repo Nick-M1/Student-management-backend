@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -23,14 +24,15 @@ import static org.mockito.Mockito.*;
     Note: Tests only the Service class & mocks the repository/DB
 */
 
+@ActiveProfiles({ "inmemory" })
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
 
     @Mock
-    private StudentRepository studentRepository;
+    private StudentRepository studentRepository;     // classes being mocked
 
     @InjectMocks
-    private StudentService studentService;
+    private StudentService studentService;          // the class being tested
 
     private List<Student> studentList;
 

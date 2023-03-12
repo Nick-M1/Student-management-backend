@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.ActiveProfiles;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
     Note: This is the only test-stage that tests the real repository & database (no mocking), so data can be persistent in the DB between tests (e.g. dependencies and ID auto increment)
 */
 
+@ActiveProfiles({ "inmemory" })
+@Transactional
 @DataJpaTest
 class StudentRepositoryTest {
 
@@ -44,7 +48,7 @@ class StudentRepositoryTest {
         studentRepository.saveAll(List.of(student1, student2, student3));
 
         List<Student> foundStudents = studentRepository.findAllStudentsCustomQuery(searchterm, subjectsList, sort);
-        System.out.println(foundStudents);
+
         assertEquals(1, foundStudents.size());
         assertEquals(student2.getId(), foundStudents.get(0).getId());
         assertEquals(student2.getName(), foundStudents.get(0).getName());
@@ -64,7 +68,7 @@ class StudentRepositoryTest {
         studentRepository.saveAll(List.of(student1, student2, student3));
 
         List<Student> foundStudents = studentRepository.findAllStudentsCustomQuery(searchterm, subjectsList, sort);
-        System.out.println(foundStudents);
+
         assertEquals(2, foundStudents.size());
         assertEquals(student1.getId(), foundStudents.get(0).getId());
         assertEquals(student2.getId(), foundStudents.get(1).getId());
@@ -195,19 +199,5 @@ class StudentRepositoryTest {
         assertEquals(2, foundStudents.size());
         assertTrue(studentRepository.existsById(existingStudent.getId()));
         assertTrue(studentRepository.existsById(newStudent.getId()));
-    }
-
-    @Disabled
-    @Test
-    void shouldNotAddStudentBecauseEmailAlreadyExists() {
-        Student existingStudent = new Student( "James", "james@gmail.com", "", LocalDate.now(), Set.of());
-        studentRepository.save(existingStudent);
-
-        Student newStudent = new Student("Smith", "james@gmail.com", "", LocalDate.now(), Set.of());
-
-        assertThrows(org.springframework.dao.DataIntegrityViolationException.class, () -> {
-            studentRepository.save(newStudent);
-            studentRepository.findAll();
-        });
     }
 }
