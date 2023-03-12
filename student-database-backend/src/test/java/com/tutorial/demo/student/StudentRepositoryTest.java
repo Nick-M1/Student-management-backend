@@ -1,7 +1,6 @@
 package com.tutorial.demo.student;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -110,6 +109,42 @@ class StudentRepositoryTest {
         assertEquals(student1.getId(), foundStudents.get(1).getId());
         assertEquals(student2.getId(), foundStudents.get(0).getId());
         assertEquals(student3.getId(), foundStudents.get(2).getId());
+    }
+
+    @Test
+    void findAllStudentsCustomQueryBySingleSubjectAscendingOrderByEmail() {
+        String searchterm = "";
+        List<String> subjectsList = List.of("biology");
+        Sort sort = Sort.by(Sort.Direction.ASC, "email");
+
+        Student student1 = new Student("Tina", "tina@gmail.com", "", LocalDate.now(), Set.of("biology"));
+        Student student2 = new Student("Jake", "jake@gmail.com", "", LocalDate.now(), Set.of("biology"));
+        Student student3 = new Student("Maria", "maria@gmail.com", "", LocalDate.now(), Set.of("biology"));
+        studentRepository.saveAll(List.of(student1, student2, student3));
+
+        List<Student> foundStudents = studentRepository.findAllStudentsCustomQuery(searchterm, subjectsList, sort);
+        assertEquals(3, foundStudents.size());
+        assertEquals(student1.getId(), foundStudents.get(2).getId());
+        assertEquals(student2.getId(), foundStudents.get(0).getId());
+        assertEquals(student3.getId(), foundStudents.get(1).getId());
+    }
+
+    @Test
+    void findAllStudentsCustomQueryBySingleSubjectAscendingOrderByDob() {
+        String searchterm = "";
+        List<String> subjectsList = List.of("biology");
+        Sort sort = Sort.by(Sort.Direction.ASC, "dob");
+
+        Student student1 = new Student("Tina", "tina@gmail.com", "", LocalDate.of(2000, 1, 1), Set.of("biology"));
+        Student student2 = new Student("Jake", "jake@gmail.com", "", LocalDate.of(2009, 1, 1), Set.of("biology"));
+        Student student3 = new Student("Maria", "maria@gmail.com", "", LocalDate.of(1950, 1, 1), Set.of("biology"));
+        studentRepository.saveAll(List.of(student1, student2, student3));
+
+        List<Student> foundStudents = studentRepository.findAllStudentsCustomQuery(searchterm, subjectsList, sort);
+        assertEquals(3, foundStudents.size());
+        assertEquals(student1.getId(), foundStudents.get(1).getId());
+        assertEquals(student2.getId(), foundStudents.get(2).getId());
+        assertEquals(student3.getId(), foundStudents.get(0).getId());
     }
 
     @Test
