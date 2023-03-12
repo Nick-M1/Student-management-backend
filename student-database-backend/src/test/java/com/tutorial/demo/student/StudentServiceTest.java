@@ -1,19 +1,27 @@
 package com.tutorial.demo.student;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.*;
-
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.*;
-import org.mockito.*;
+import com.tutorial.demo.exception.ApiRequestException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 
-import com.tutorial.demo.exception.ApiRequestException;
+import java.time.LocalDate;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+/*
+    Unit testing service
+    Note: Tests only the Service class & mocks the repository/DB
+*/
 
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
@@ -33,6 +41,7 @@ class StudentServiceTest {
         studentList.add(new Student(2L, "Jane Smith", "jsmith@example.com", "https://example.com/jsmith.jpg", LocalDate.of(2001, 2, 2), new HashSet<>(Arrays.asList("English", "History"))));
     }
 
+    // GETTERS
     @Test
     @DisplayName("Test get all students")
     void testGetAllStudents() {
@@ -45,7 +54,7 @@ class StudentServiceTest {
     }
 
     @Test
-    void testGetAllStudentsByRequest() {        //todo more different requests
+    void testGetAllStudentsByRequest() {
         List<String> subjects = Arrays.asList("Math", "Science");
         String searchBy = "John";
         String orderBy = "name";
@@ -139,6 +148,7 @@ class StudentServiceTest {
         verify(studentRepository, times(1)).findAllSubjects();
     }
 
+    // POST
     @Test
     void testAddNewStudent() {
         Student newStudent = new Student(3L,"New Student", "newstudent@example.com", "", LocalDate.now(), Set.of("mathematics"));
@@ -164,18 +174,7 @@ class StudentServiceTest {
         verify(studentRepository, times(1)).findStudentByEmail(newStudent.getEmail());
     }
 
-
-    @Test
-    void deleteStudent_deletesExistingStudent() {
-        Long studentId = 1L;
-
-        Mockito.when(studentRepository.findById(studentId)).thenReturn(Optional.of(new Student()));
-
-        Long result = studentService.deleteStudent(studentId);
-
-        assertEquals(studentId, result);
-    }
-
+    // DELETE
     @Test
     void testDeleteStudentWithValidId() {
         // Arrange
@@ -211,7 +210,7 @@ class StudentServiceTest {
         Mockito.verify(studentRepository, Mockito.never()).deleteById(studentId);
     }
 
-
+    // PUT
     @Test
     void testUpdateStudentWithValidId() {
         // Create a student to update

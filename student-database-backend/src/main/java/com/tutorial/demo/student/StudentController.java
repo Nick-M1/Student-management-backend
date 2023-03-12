@@ -31,7 +31,11 @@ public class StudentController {
     }
 
     @GetMapping                        // Get request
-    public List<Student> getAllStudentsByRequest(@RequestParam(required = false) String searchBy, @RequestParam(required = false) String orderBy, @RequestParam(required = false) String isAsc, @RequestParam(required = false) List<String> subjects) {
+    public List<Student> getAllStudentsByRequest(
+            @RequestParam(value = "searchBy", required = false, defaultValue = "") String searchBy,
+            @RequestParam(value = "orderBy",  required = false, defaultValue = "") String orderBy,
+            @RequestParam(value = "isAsc",  required = false, defaultValue = "true") String isAsc,
+            @RequestParam(required = false) List<String> subjects) {
         return studentService.getAllStudentsByRequest(searchBy, orderBy, isAsc, subjects);
     }
 
@@ -57,7 +61,13 @@ public class StudentController {
     }
 
     @PutMapping(path="{studentId}")     // Put/update request (update id, name & email)
-    public Long updateStudent(@PathVariable("studentId") Long studentId, @RequestParam(required = false) String name, @RequestParam(required = false) String email, @RequestParam(required = false) String image, @RequestParam(required = false) String dob, @RequestParam(required = false) Set<String> subjects) {
+    public Long updateStudent(
+            @PathVariable("studentId") Long studentId,
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            @RequestParam(value = "email", required = false, defaultValue = "") String email,
+            @RequestParam(value = "image", required = false, defaultValue = "") String image,
+            @RequestParam(value = "dob", required = false, defaultValue = "") String dob,
+            @RequestParam(required = false) Set<String> subjects) {
         return studentService.updateStudent(studentId, name, email, image, dob, subjects);
     }
 
