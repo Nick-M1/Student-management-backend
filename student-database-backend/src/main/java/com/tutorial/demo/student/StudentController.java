@@ -13,7 +13,6 @@ import java.util.Set;
 
 @RestController
 @RequestMapping(path="api/v1/student")
-@CrossOrigin("http://localhost:5173/")          //todo: Put in env variables
 public class StudentController {
 
     private final StudentService studentService;                // Want all variables to be private & final/consts if possible (final needs constructor)
