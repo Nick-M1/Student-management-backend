@@ -1,10 +1,10 @@
 package com.tutorial.demo.marking;
 
+import com.tutorial.demo.course.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping(path="api/v1/marking")
@@ -46,9 +46,8 @@ public class MarkingController {
     @PutMapping(path="{markingId}")     // Put/update request (update id, name & email)
     public Long updateMark(
             @PathVariable("markingId") Long markingId,
-            @RequestParam(value = "subject", required = false, defaultValue = "") String subject,
+            @RequestParam(value = "course", required = false, defaultValue = "") Course course,
             @RequestParam(value = "score", required = false, defaultValue = "") Float score) {
-        System.out.println(subject + "  " + score);
-        return markingService.updateMarking(markingId, subject, score);
+        return markingService.updateMarking(markingId, course, score);
     }
 }

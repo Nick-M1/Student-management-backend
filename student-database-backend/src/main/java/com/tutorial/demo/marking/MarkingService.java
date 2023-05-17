@@ -1,5 +1,6 @@
 package com.tutorial.demo.marking;
 
+import com.tutorial.demo.course.Course;
 import com.tutorial.demo.exception.ApiRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,9 +32,9 @@ public class MarkingService {
 
     public MarkingResponse getMarksAndStatisticsByStudentId(Long studentId) {
         List<Marking> markings = markingRepository.findByStudentId(studentId);
-        Map<String, List<Marking>> groupedMarkings = markings.stream().collect(groupingBy(Marking::getSubject));
+        Map<Course, List<Marking>> groupedMarkings = markings.stream().collect(groupingBy(Marking::getCourse));
 
-        Map<String, Double> meanMap = new HashMap<>();
+        Map<Course, Double> meanMap = new HashMap<>();
         groupedMarkings.forEach((key, value) ->
                 meanMap.put(key ,value.stream().mapToDouble(Marking::getScore).sum() / value.size())
         );
@@ -58,12 +59,12 @@ public class MarkingService {
     }
 
     @Transactional
-    public Long updateMarking(Long markingId, String subject, Float score) {
+    public Long updateMarking(Long markingId, Course course, Float score) {
         Marking currentMarking = markingRepository.findById(markingId)
                 .orElseThrow(() -> new ApiRequestException(String.format("marking with id %d doesn't exist", markingId)));
 
-        if (subject != null && subject.length() > 3)
-            currentMarking.setSubject(subject);
+        if (course != null)
+            currentMarking.setCourse(course);
 
         if (score != null)
             currentMarking.setScore(score);
