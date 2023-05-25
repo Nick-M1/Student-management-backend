@@ -7,6 +7,9 @@ package com.tutorial.demo.student;
 
 import com.tutorial.demo.exception.ApiRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +22,9 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
+    @Value("${config.database.number_of_items_per_page}")
+    private int NUMBER_OF_ITEMS_PER_PAGE;
+
     @Autowired
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
@@ -29,25 +35,27 @@ public class StudentService {
     }
 
     // GETTERS
-    public List<Student> getAllStudentsByRequest(String searchBy, String orderBy, String isAsc, List<String> subjects) {
+    public List<Student> getAllStudentsByRequest(String searchBy, String orderBy, String isAsc, int pageNumber, List<String> subjects) {
         // Ascending or Descending order
-        Sort.Direction sortDirection = (isAsc == null || !Objects.equals(isAsc, "false")) ? Sort.Direction.ASC : Sort.Direction.DESC;          // default to true
+        Sort.Direction sortDirection = !Objects.equals(isAsc, "false") ? Sort.Direction.ASC : Sort.Direction.DESC;
 
         // Sort by category
-        Sort customCategorySort = switch (orderBy) {
-            case null       -> Sort.by(sortDirection, "id");            // Need to check for null (don't remove)
-            case "name"     -> Sort.by(sortDirection, "name");
-            case "email"    -> Sort.by(sortDirection, "email");
-            case "dob"      -> Sort.by(sortDirection, "dob");
-            default         -> Sort.by(sortDirection, "id");
-        };
+        Sort customCategorySort = Sort.by(sortDirection, orderBy);
 
-        // Search by search term
-        String searchByParam = searchBy == null ? "" : searchBy;
+        // Page request (sort + pagination)
+        Pageable pageableRequest = PageRequest.of(pageNumber, NUMBER_OF_ITEMS_PER_PAGE, customCategorySort);
+
         return studentRepository.findAllStudentsCustomQuery(
-            searchByParam,
-            subjects == null ? new LinkedList<>() : subjects,
-            customCategorySort
+            searchBy,
+            subjects,
+            pageableRequest
+        );
+    }
+
+    public long getCountStudentsByRequest(String searchBy, List<String> subjects) {
+        return studentRepository.countByCustomQuery(
+            searchBy,
+            subjects
         );
     }
 

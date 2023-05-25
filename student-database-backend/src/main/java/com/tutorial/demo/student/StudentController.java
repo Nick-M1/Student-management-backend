@@ -32,10 +32,18 @@ public class StudentController {
     @GetMapping                        // Get request
     public List<Student> getAllStudentsByRequest(
             @RequestParam(value = "searchBy", required = false, defaultValue = "") String searchBy,
-            @RequestParam(value = "orderBy",  required = false, defaultValue = "") String orderBy,
+            @RequestParam(value = "orderBy",  required = false, defaultValue = "id") String orderBy,
             @RequestParam(value = "isAsc",  required = false, defaultValue = "true") String isAsc,
-            @RequestParam(required = false) List<String> subjects) {
-        return studentService.getAllStudentsByRequest(searchBy, orderBy, isAsc, subjects);
+            @RequestParam(value = "page",  required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(value = "subjects", required = false, defaultValue = "") List<String> subjects) {
+        return studentService.getAllStudentsByRequest(searchBy, orderBy, isAsc, pageNumber, subjects);
+    }
+
+    @GetMapping  (path = "count")                      // Get request
+    public long getCountStudentsByRequest(
+            @RequestParam(value = "searchBy", required = false, defaultValue = "") String searchBy,
+            @RequestParam(value = "subjects", required = false, defaultValue = "") List<String> subjects) {
+        return studentService.getCountStudentsByRequest(searchBy, subjects);
     }
 
     @GetMapping(path = "{studentId}")                        // Get request

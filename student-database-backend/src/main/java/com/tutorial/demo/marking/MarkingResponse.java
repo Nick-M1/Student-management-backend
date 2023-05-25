@@ -1,15 +1,14 @@
 package com.tutorial.demo.marking;
 
-import com.tutorial.demo.course.Course;
 
 import java.util.List;
 import java.util.Map;
 
 public class MarkingResponse {
     private List<Marking> markings;
-    private Map<Course, Double> mean;
+    private Map<String, Double> mean;
 
-    public MarkingResponse(List<Marking> markings, Map<Course, Double> mean) {
+    public MarkingResponse(List<Marking> markings, Map<String, Double> mean) {
         this.markings = markings;
         this.mean = mean;
     }
@@ -22,11 +21,11 @@ public class MarkingResponse {
         this.markings = markings;
     }
 
-    public Map<Course, Double> getMean() {
+    public Map<String, Double> getMean() {
         return mean;
     }
 
-    public void setMean(Map<Course, Double> mean) {
+    public void setMean(Map<String, Double> mean) {
         this.mean = mean;
     }
 }

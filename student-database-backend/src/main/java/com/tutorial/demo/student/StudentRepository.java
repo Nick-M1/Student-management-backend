@@ -5,6 +5,7 @@ package com.tutorial.demo.student;
     Accesses info from database (postreSQL)
 */
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,7 +31,23 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
                 OR upper(s.email) like CONCAT('%',UPPER(:searchterm),'%') escape '/'
             )
     """)
-    List<Student> findAllStudentsCustomQuery(String searchterm, List<String> subjectsList, Sort sort);          // JPA adds Sort automatically
+    List<Student> findAllStudentsCustomQuery(String searchterm, List<String> subjectsList, Pageable pageable);          // JPA adds Sort automatically
+
+    @Query("""
+        select
+            COUNT(DISTINCT s)
+        from
+            Student s
+        JOIN
+            s.subjects subject
+        where
+            subject IN :subjectsList
+            AND (
+                upper(s.name) like CONCAT('%',UPPER(:searchterm),'%') escape '/'
+                OR upper(s.email) like CONCAT('%',UPPER(:searchterm),'%') escape '/'
+            )
+    """)
+    long countByCustomQuery(String searchterm, List<String> subjectsList);
 
     @Query("SELECT subject FROM Student s join s.subjects subject")
     Set<String> findAllSubjects();

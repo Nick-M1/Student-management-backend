@@ -34,9 +34,9 @@ public class MarkingService {
         List<Marking> markings = markingRepository.findByStudentId(studentId);
         Map<Course, List<Marking>> groupedMarkings = markings.stream().collect(groupingBy(Marking::getCourse));
 
-        Map<Course, Double> meanMap = new HashMap<>();
+        Map<String, Double> meanMap = new HashMap<>();
         groupedMarkings.forEach((key, value) ->
-                meanMap.put(key ,value.stream().mapToDouble(Marking::getScore).sum() / value.size())
+                meanMap.put(key.getCode() ,value.stream().mapToDouble(Marking::getScore).sum() / value.size())
         );
 
         return new MarkingResponse(
