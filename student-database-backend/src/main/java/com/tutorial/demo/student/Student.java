@@ -1,9 +1,11 @@
 package com.tutorial.demo.student;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tutorial.demo.yeargroup.YearGroupEnum;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 import java.util.Set;
 
 @Entity(name="Student")             // Hibernate DB
@@ -19,6 +21,7 @@ public class Student {
     @Column(name = "email", nullable = false, columnDefinition = "TEXT", unique = true) private String email;
     @Column(name = "image", nullable = false, columnDefinition = "TEXT")                private String image;
     @Column(name = "date_of_birth", nullable = false, columnDefinition = "TEXT")        private LocalDate dob;
+    @Enumerated(EnumType.STRING) @JsonProperty("yeargroup")          private YearGroupEnum yeargroup;
     @ElementCollection @CollectionTable(name = "subjects")                              private Set<String> subjects;
     @Transient                                                                          private Integer age;    // This value is calculated, not inputted into constructor as argument
 
@@ -26,20 +29,22 @@ public class Student {
     public Student() {
     }
 
-    public Student(Long id, String name, String email, String image, LocalDate dob, Set<String> subjects ) {
+    public Student(Long id, String name, String email, String image, LocalDate dob, YearGroupEnum yeargroup, Set<String> subjects ) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.image = image;
         this.dob = dob;
+        this.yeargroup = yeargroup;
         this.subjects = subjects;
     }
 
-    public Student(String name, String email, String image, LocalDate dob, Set<String> subjects) {
+    public Student(String name, String email, String image, LocalDate dob, YearGroupEnum yeargroup, Set<String> subjects) {
         this.name = name;
         this.email = email;
         this.image = image;
         this.dob = dob;
+        this.yeargroup = yeargroup;
         this.subjects = subjects;
     }
 
@@ -83,6 +88,14 @@ public class Student {
         this.dob = dob;
     }
 
+    public YearGroupEnum getYeargroup() {
+        return yeargroup;
+    }
+
+    public void setYeargroup(YearGroupEnum yeargroup) {
+        this.yeargroup = yeargroup;
+    }
+
     public Set<String> getSubjects() {
         return subjects;
     }
@@ -98,6 +111,6 @@ public class Student {
 
     @Override
     public String toString() {
-        return String.format("Student( id=%d, name=%s, email=%s, dob=%s, age=%d, subjects=%s)", id, name, email, dob, age, subjects.toString());
+        return String.format("Student( id=%d, name=%s, email=%s, dob=%s, age=%d, yeargroup=%s, subjects=%s)", id, name, email, dob, age, yeargroup.toString(), subjects.toString());
     }
 }

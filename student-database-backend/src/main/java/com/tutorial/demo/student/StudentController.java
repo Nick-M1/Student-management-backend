@@ -5,7 +5,10 @@ package com.tutorial.demo.student;
     Stores resources for API for Student
 */
 
+import com.tutorial.demo.yeargroup.YearGroupEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +33,7 @@ public class StudentController {
     }
 
     @GetMapping                        // Get request
-    public List<Student> getAllStudentsByRequest(
+    public Page<Student> getAllStudentsByRequest(
             @RequestParam(value = "searchBy", required = false, defaultValue = "") String searchBy,
             @RequestParam(value = "orderBy",  required = false, defaultValue = "id") String orderBy,
             @RequestParam(value = "isAsc",  required = false, defaultValue = "true") String isAsc,
@@ -39,7 +42,7 @@ public class StudentController {
         return studentService.getAllStudentsByRequest(searchBy, orderBy, isAsc, pageNumber, subjects);
     }
 
-    @GetMapping  (path = "count")                      // Get request
+    @GetMapping(path = "count")                      // Get request
     public long getCountStudentsByRequest(
             @RequestParam(value = "searchBy", required = false, defaultValue = "") String searchBy,
             @RequestParam(value = "subjects", required = false, defaultValue = "") List<String> subjects) {
@@ -57,25 +60,29 @@ public class StudentController {
         return studentService.getAllSubjects();
     }
 
-    @PostMapping                       // Post request
+    @PostMapping                        // Post request
+    @ResponseStatus(HttpStatus.CREATED)
     public Long registerNewStudent(@RequestBody Student student) {      // @RequestBody = Gets this input from user
         return studentService.addNewStudent(student);
     }
 
     @DeleteMapping(path="{studentId}")  // Delete request (given studentId)
+    @ResponseStatus(HttpStatus.OK)
     public Long deleteStudent(@PathVariable("studentId") Long studentId) {
         return studentService.deleteStudent(studentId);
     }
 
     @PutMapping(path="{studentId}")     // Put/update request (update id, name & email)
+    @ResponseStatus(HttpStatus.OK)
     public Long updateStudent(
             @PathVariable("studentId") Long studentId,
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "email", required = false, defaultValue = "") String email,
             @RequestParam(value = "image", required = false, defaultValue = "") String image,
             @RequestParam(value = "dob", required = false, defaultValue = "") String dob,
+            @RequestParam(value = "yeargroup", required = false, defaultValue = "") YearGroupEnum yeargroup,
             @RequestParam(required = false) Set<String> subjects) {
-        return studentService.updateStudent(studentId, name, email, image, dob, subjects);
+        return studentService.updateStudent(studentId, name, email, image, dob, yeargroup, subjects);
     }
 
 }

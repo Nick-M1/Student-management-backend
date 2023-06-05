@@ -5,6 +5,7 @@ package com.tutorial.demo.student;
     Accesses info from database (postreSQL)
 */
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,7 +32,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
                 OR upper(s.email) like CONCAT('%',UPPER(:searchterm),'%') escape '/'
             )
     """)
-    List<Student> findAllStudentsCustomQuery(String searchterm, List<String> subjectsList, Pageable pageable);          // JPA adds Sort automatically
+    Page<Student> findAllStudentsCustomQuery(String searchterm, List<String> subjectsList, Pageable pageable);          // JPA adds Sort automatically
 
     @Query("""
         select
