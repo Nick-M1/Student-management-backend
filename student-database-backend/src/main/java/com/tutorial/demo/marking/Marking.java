@@ -3,8 +3,16 @@ package com.tutorial.demo.marking;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tutorial.demo.course.Course;
 import com.tutorial.demo.student.Student;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
+// Lombok:
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 
 @Entity(name="Marking")             // Hibernate DB
 @Table(name = "marking")   // Database
@@ -21,67 +29,10 @@ public class Marking {
     @Column(name = "score", nullable = false, columnDefinition = "FLOAT")                           private Float score;
 
 
-    public Marking() {}
-
-    public Marking(Long id,
-                   Student student,
-                   Course course,
-                   String title,
-                   Float score) {
-        this.id = id;
+    public Marking(Course course, Student student, String title, Float score) {
         this.student = student;
         this.course = course;
         this.title = title;
         this.score = score;
-    }
-
-    public Marking(Course course,
-                   Student student,
-                   String title,
-                   Float score) {
-        this.student = student;
-        this.course = course;
-        this.title = title;
-        this.score = score;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public Float getScore() {
-        return score;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public void setScore(Float score) {
-        this.score = score;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 }
