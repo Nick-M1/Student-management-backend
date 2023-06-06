@@ -3,18 +3,23 @@ package com.tutorial.demo.marking;
 import com.tutorial.demo.course.Course;
 import com.tutorial.demo.exception.ApiRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static java.util.stream.Collectors.groupingBy;
+import java.util.Objects;
 
 @Component
 public class MarkingService {
     private final MarkingRepository markingRepository;
+
+    @Value("${config.database.number_of_items_per_page}")
+    private int NUMBER_OF_ITEMS_PER_PAGE;
 
     @Autowired
     public MarkingService(MarkingRepository markingRepository) {
@@ -26,24 +31,22 @@ public class MarkingService {
         return markingRepository.findAll();
     }
 
-    public List<Marking> getMarksByStudentId(Long studentId) {
-        return markingRepository.findByStudentId(studentId);
-    }
+    public Page<Marking> getMarksByStudentIdByRequest(Long studentId, String searchBy, String orderBy, String isAsc, int pageNumber) {
+        Sort.Direction sortDirection = !Objects.equals(isAsc, "false") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort customCategorySort = Sort.by(sortDirection, orderBy);
+        Pageable pageableRequest = PageRequest.of(pageNumber, NUMBER_OF_ITEMS_PER_PAGE, customCategorySort);
 
-    public MarkingResponse getMarksAndStatisticsByStudentId(Long studentId) {
-        List<Marking> markings = markingRepository.findByStudentId(studentId);
-        Map<Course, List<Marking>> groupedMarkings = markings.stream().collect(groupingBy(Marking::getCourse));
-
-        Map<String, Double> meanMap = new HashMap<>();
-        groupedMarkings.forEach((key, value) ->
-                meanMap.put(key.getCode() ,value.stream().mapToDouble(Marking::getScore).sum() / value.size())
-        );
-
-        return new MarkingResponse(
-                markings,
-                meanMap
+        return markingRepository.findByStudentIdCustomQuery(
+                studentId,
+                searchBy,
+                pageableRequest
         );
     }
+
+    public List<?> getMarksStatisticsByStudentId(Long studentId) {
+        return markingRepository.findMarksStatisticsByStudentId(studentId);
+    }
+
 
     public Long addNewMarking(Marking marking) {
         markingRepository.save(marking);    // Save to DB
@@ -59,12 +62,15 @@ public class MarkingService {
     }
 
     @Transactional
-    public Long updateMarking(Long markingId, Course course, Float score) {
+    public Long updateMarking(Long markingId, Course course, String title, Float score) {
         Marking currentMarking = markingRepository.findById(markingId)
                 .orElseThrow(() -> new ApiRequestException(String.format("marking with id %d doesn't exist", markingId)));
 
         if (course != null)
             currentMarking.setCourse(course);
+
+        if (title != null)
+            currentMarking.setTitle(title);
 
         if (score != null)
             currentMarking.setScore(score);

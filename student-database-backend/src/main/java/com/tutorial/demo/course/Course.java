@@ -16,16 +16,20 @@ public class Course {
     private String code;
     @Column(name = "title", nullable = false, columnDefinition = "TEXT")
     private String title;
+    @Column(name = "department", nullable = false, columnDefinition = "TEXT")
+    private String department;
 
-    public Course(Long id, String code, String title) {
+    public Course(Long id, String code, String title, String department) {
         this.id = id;
         this.code = code;
         this.title = title;
+        this.department = department;
     }
 
-    public Course(String code, String title) {
+    public Course(String code, String title, String department) {
         this.code = code;
         this.title = title;
+        this.department = department;
     }
 
     public Course() {
@@ -53,5 +57,13 @@ public class Course {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 }

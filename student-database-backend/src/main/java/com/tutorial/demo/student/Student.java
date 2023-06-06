@@ -21,7 +21,7 @@ public class Student {
     @Column(name = "email", nullable = false, columnDefinition = "TEXT", unique = true) private String email;
     @Column(name = "image", nullable = false, columnDefinition = "TEXT")                private String image;
     @Column(name = "date_of_birth", nullable = false, columnDefinition = "TEXT")        private LocalDate dob;
-    @Enumerated(EnumType.STRING) @JsonProperty("yeargroup")          private YearGroupEnum yeargroup;
+    @Enumerated(EnumType.STRING) @JsonProperty("yeargroup")                             private YearGroupEnum yeargroup;
     @ElementCollection @CollectionTable(name = "subjects")                              private Set<String> subjects;
     @Transient                                                                          private Integer age;    // This value is calculated, not inputted into constructor as argument
 

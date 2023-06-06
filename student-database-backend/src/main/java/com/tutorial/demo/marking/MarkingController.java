@@ -2,6 +2,7 @@ package com.tutorial.demo.marking;
 
 import com.tutorial.demo.course.Course;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,12 +26,18 @@ public class MarkingController {
 
     // GET MARKS BY STUDENT ID
     @GetMapping(path = "{studentId}")
-    public List<Marking> getMarksByStudentId(@PathVariable("studentId") Long studentId) {
-        return markingService.getMarksByStudentId(studentId);
+    public Page<Marking> getCoursesByRequest(
+            @PathVariable("studentId") Long studentId,
+            @RequestParam(value = "searchBy", required = false, defaultValue = "") String searchBy,
+            @RequestParam(value = "orderBy",  required = false, defaultValue = "id") String orderBy,
+            @RequestParam(value = "isAsc",  required = false, defaultValue = "true") String isAsc,
+            @RequestParam(value = "page",  required = false, defaultValue = "0") int pageNumber) {
+        return markingService.getMarksByStudentIdByRequest(studentId, searchBy, orderBy, isAsc, pageNumber);
     }
+
     @GetMapping(path = "{studentId}/statistics")
-    public MarkingResponse getMarksAndStatisticsByStudentId(@PathVariable("studentId") Long studentId) {
-        return markingService.getMarksAndStatisticsByStudentId(studentId);
+    public List<?> getMarksStatisticsByStudentId(@PathVariable("studentId") Long studentId) {
+        return markingService.getMarksStatisticsByStudentId(studentId);
     }
 
     @PostMapping
@@ -43,11 +50,12 @@ public class MarkingController {
         return markingService.deleteMarking(markingId);
     }
 
-    @PutMapping(path="{markingId}")     // Put/update request (update id, name & email)
+    @PutMapping(path="{markingId}")
     public Long updateMark(
             @PathVariable("markingId") Long markingId,
             @RequestParam(value = "course", required = false, defaultValue = "") Course course,
+            @RequestParam(value = "title", required = false, defaultValue = "") String title,
             @RequestParam(value = "score", required = false, defaultValue = "") Float score) {
-        return markingService.updateMarking(markingId, course, score);
+        return markingService.updateMarking(markingId, course, title, score);
     }
 }

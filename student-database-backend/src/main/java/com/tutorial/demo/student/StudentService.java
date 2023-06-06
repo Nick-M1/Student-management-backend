@@ -37,12 +37,12 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
+    // GETTERS
     public List<Student> getAllStudents() {
         logger.info("Request - Get all students");
         return studentRepository.findAll();
     }
 
-    // GETTERS
     public Page<Student> getAllStudentsByRequest(String searchBy, String orderBy, String isAsc, int pageNumber, List<String> subjects) {
         logger.info("Request - Get all students with params");
 

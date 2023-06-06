@@ -1,31 +1,30 @@
 package com.tutorial.demo.marking;
 
 
-import java.util.List;
-import java.util.Map;
+import com.tutorial.demo.course.Course;
 
 public class MarkingResponse {
-    private List<Marking> markings;
-    private Map<String, Double> mean;
+    private Course course;
+    private long courseAverage;
 
-    public MarkingResponse(List<Marking> markings, Map<String, Double> mean) {
-        this.markings = markings;
-        this.mean = mean;
+    public MarkingResponse(Course course, long courseAverage) {
+        this.course = course;
+        this.courseAverage = courseAverage;
     }
 
-    public List<Marking> getMarkings() {
-        return markings;
+    public Course getCourse() {
+        return course;
     }
 
-    public void setMarkings(List<Marking> markings) {
-        this.markings = markings;
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
-    public Map<String, Double> getMean() {
-        return mean;
+    public long getCourseAverage() {
+        return courseAverage;
     }
 
-    public void setMean(Map<String, Double> mean) {
-        this.mean = mean;
+    public void setCourseAverage(long courseAverage) {
+        this.courseAverage = courseAverage;
     }
 }
