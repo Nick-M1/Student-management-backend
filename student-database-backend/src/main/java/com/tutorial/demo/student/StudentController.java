@@ -9,6 +9,7 @@ import com.tutorial.demo.yeargroup.YearGroupEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,8 +54,9 @@ public class StudentController {
         return studentService.getCountStudentsByRequest(searchBy, subjects);
     }
 
-    @GetMapping(path = "{studentId}")                        // Get request
-    @PreAuthorize("hasAuthority('SCOPE_student:read_single')")
+    @GetMapping(path = "{studentId}")
+    @PreAuthorize("hasAuthority('SCOPE_student:read') or hasAuthority('SCOPE_student:read_single')")
+    @PostAuthorize("hasAuthority('SCOPE_student:read') or (hasAuthority('SCOPE_student:read_single') and returnObject.getEmail() == principal.getClaimAsString('sub'))")
     public Student getStudentById(@PathVariable("studentId") Long studentId) {
         return studentService.getStudentById(studentId);
     }
