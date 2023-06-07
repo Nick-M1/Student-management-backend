@@ -7,7 +7,8 @@ package com.tutorial.demo.user;
 */
 
 public enum UserPermission {
-    STUDENT_READ("student:read"),               // read/write to students info DB
+    STUDENT_READ_SINGLE("student:read_single"),               // read/write to only their DB
+    STUDENT_READ("student:read"),               // read/write to all students info DB
     STUDENT_WRITE("student:write"),
     COURSE_READ("course:read"),                 // read/write to course info DB
     COURSE_WRITE("course:write");

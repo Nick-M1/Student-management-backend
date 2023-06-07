@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import static com.tutorial.demo.user.UserPermission.*;
 
 public enum Role {
-    STUDENT(Set.of(STUDENT_READ, COURSE_READ)),
-    ADMIN(Set.of(STUDENT_READ, COURSE_READ, STUDENT_WRITE, COURSE_WRITE));
+    STUDENT(Set.of(STUDENT_READ_SINGLE, COURSE_READ)),
+    ADMIN(Set.of(STUDENT_READ_SINGLE, STUDENT_READ, COURSE_READ, STUDENT_WRITE, COURSE_WRITE));
 
     private final Set<UserPermission> permissions;
 

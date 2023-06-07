@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,5 +36,22 @@ public class TokenService {
                 .build();
 
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public String getRoleFromToken(String userAsString) {
+        return getItemFromToken(userAsString, "role=([^,]+)");
+    }
+    public String getIdFromToken(String userAsString) {
+        return getItemFromToken(userAsString, "id=([^,]+)");
+    }
+
+    private String getItemFromToken(String userAsString, String regexExpression) {
+        var pattern = Pattern.compile(regexExpression);
+        var matcher = pattern.matcher(userAsString);
+
+        if (!matcher.find())
+            throw new RuntimeException("Error finding role from JWT Token");        //todo: make custom exception
+
+        return matcher.group(1);
     }
 }

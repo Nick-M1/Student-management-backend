@@ -29,11 +29,13 @@ public class StudentController {
 
     // GET ALL STUDENTS (with ordering & filtering
     @GetMapping(path = "all")                        // Get request
+    @PreAuthorize("hasAuthority('SCOPE_student:read')")
     public List<Student> getAllStudents() {
         return studentService.getAllStudents();
     }
 
     @GetMapping                        // Get request
+    @PreAuthorize("hasAuthority('SCOPE_student:read')")
     public Page<Student> getAllStudentsByRequest(
             @RequestParam(value = "searchBy", required = false, defaultValue = "") String searchBy,
             @RequestParam(value = "orderBy",  required = false, defaultValue = "id") String orderBy,
@@ -44,6 +46,7 @@ public class StudentController {
     }
 
     @GetMapping(path = "count")                      // Get request
+    @PreAuthorize("hasAuthority('SCOPE_student:read')")
     public long getCountStudentsByRequest(
             @RequestParam(value = "searchBy", required = false, defaultValue = "") String searchBy,
             @RequestParam(value = "subjects", required = false, defaultValue = "") List<String> subjects) {
@@ -51,31 +54,35 @@ public class StudentController {
     }
 
     @GetMapping(path = "{studentId}")                        // Get request
+    @PreAuthorize("hasAuthority('SCOPE_student:read_single')")
     public Student getStudentById(@PathVariable("studentId") Long studentId) {
         return studentService.getStudentById(studentId);
     }
 
     // GET ALL SUBJECTS
     @GetMapping(path = "subjects")
+    @PreAuthorize("hasAuthority('SCOPE_student:read_single')")
     public Set<String> getAllSubjects() {
         return studentService.getAllSubjects();
     }
 
     @PostMapping                        // Post request
     @ResponseStatus(HttpStatus.CREATED)
-//    @PreAuthorize("hasAuthority('student:write')")
+    @PreAuthorize("hasAuthority('SCOPE_student:write')")
     public Long registerNewStudent(@RequestBody Student student) {      // @RequestBody = Gets this input from user
         return studentService.addNewStudent(student);
     }
 
     @DeleteMapping(path="{studentId}")  // Delete request (given studentId)
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('SCOPE_student:write')")
     public Long deleteStudent(@PathVariable("studentId") Long studentId) {
         return studentService.deleteStudent(studentId);
     }
 
     @PutMapping(path="{studentId}")     // Put/update request (update id, name & email)
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('SCOPE_student:write')")
     public Long updateStudent(
             @PathVariable("studentId") Long studentId,
             @RequestParam(value = "name", required = false, defaultValue = "") String name,

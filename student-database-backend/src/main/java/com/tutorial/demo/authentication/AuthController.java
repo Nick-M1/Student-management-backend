@@ -23,10 +23,14 @@ public class AuthController {
 
 
     @PostMapping("/token")
-    public String token(@RequestBody LoginRequest userLogin) {
+    public LoginResponse token(@RequestBody LoginRequest userLogin) {
         logger.info(userLogin.toString());
-
         var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.username(), userLogin.password()));
-        return tokenService.generateToken(authentication);
+        var userAsString = authentication.getPrincipal().toString();
+
+        var jwtToken = tokenService.generateToken(authentication);
+        var role = tokenService.getRoleFromToken(userAsString);
+        var id = tokenService.getIdFromToken(userAsString);
+        return new LoginResponse(jwtToken, role, id);
     }
 }
