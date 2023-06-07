@@ -53,9 +53,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("SELECT subject FROM Student s join s.subjects subject")
     Set<String> findAllSubjects();
 
-//    @Query("SELECT s FROM Student s JOIN s.subjects subject WHERE ?1 IN subject ")
-//    List<Student> findAllStudentsBySubjects(String subject);
-
     @Query("SELECT s FROM Student s WHERE s.email = ?1")
     Optional<Student> findStudentByEmail(String email);
 }

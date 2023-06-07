@@ -25,6 +25,7 @@ import java.util.Set;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,6 +45,14 @@ public class StudentControllerTest {
     @MockBean
     private StudentService studentService;
 
+    @Test
+    public void testUnauthorised() throws Exception {
+        mockMvc.perform(get("/api/v1/student/all")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+
+                .andExpect(status().isUnauthorized());
+    }
 
     @Test
     public void testGetAllStudents() throws Exception {
@@ -54,8 +63,10 @@ public class StudentControllerTest {
         when(studentService.getAllStudents()).thenReturn(students);
 
         mockMvc.perform(get("/api/v1/student/all")
+            .with(httpBasic("username", "password"))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
+
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 

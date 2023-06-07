@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -56,6 +57,7 @@ public class CourseService {
     public Set<String> getAllDepartments() {
         return courseRepository.findAllDepartments();
     }
+
 
     public Long addCourse(Course course) {
         courseRepository.findByCode(course.getCode())
